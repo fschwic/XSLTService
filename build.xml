@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="XSLT Service" default="packaging" basedir=".">
+
+	<!-- project and packs -->
+	<property environment="env" />
+	<property name="project.name" value="XSLTService" />
+	<property name="ejb3.jar" value="${project.name}.ejb3" />
+	<property name="web.jar" value="${project.name}.war" />
+	<property name="enterprise.jar" value="${project.name}.ear" />
+	<property name="src.pack" value="${project.name}-sources.jar" />
+
+	<!-- JBoss settings -->
+	<property name="jboss.home" value="${env.JBOSS_HOME}" />
+	<property name="jboss.config" value="default" />
+	<property name="jboss.deploy.dir" value="${jboss.home}/server/${jboss.config}/deploy" />
+	
+	<!-- Tomcat settings -->
+	<property name="tomcat.home" value="${env.CATALINA_HOME}"/>
+	<property name="tomcat.deploy.dir" value="${tomcat.home}\webapps" />
+
+	<!-- decide which pack should be deployed in which server -->
+	<property name="deploy.pack" value="${web.jar}" />
+	<property name="deploy.dir" value="${jboss.deploy.dir}" />
+	
+
+	<target name="packaging" depends="war" />
+
+	<target name="ejb3" description="${ejb3.jar}">
+		<jar destfile="${ejb3.jar}">
+			<zipfileset dir="bin">
+				<include name="**/entities/**"/>
+				<include name="**/session/**"/>
+			</zipfileset>
+			<zipfileset dir="ejb3" />
+		</jar>
+	</target>
+
+	<target name="war" description="${web.jar}">
+		<jar destfile="${web.jar}">
+			<zipfileset dir="bin" prefix="WEB-INF/classes" >
+				<include name="net/schwichtenberg/xsltservice/**"/>
+				<include name="net/schwichtenberg/http/**"/>
+				<!--
+				<include name="**/servlets/**"/>
+				-->
+			</zipfileset>
+			<zipfileset dir="." prefix="WEB-INF/classes" >
+				<include name="log4j.xml"/>
+			</zipfileset>
+			<zipfileset dir="web" />
+		</jar>
+	</target>
+
+	<target name="sources" description="${src.pack}">
+		<delete>
+			<fileset dir=".">
+				<include name="${src.pack}"/>
+			</fileset>
+		</delete>
+		<jar destfile="${src.pack}">
+			<zipfileset dir=".">
+				<include name="src/**"/>
+				<include name="ear/**"/>
+				<include name="ejb3/**"/>
+				<include name="web/**"/>
+				<include name=".settings/**"/>
+				<include name=".classpath"/>
+				<include name=".project"/>
+				<include name="build.xml"/>
+			</zipfileset>
+			<zipfileset dir="web" />
+		</jar>
+	</target>
+
+	<target name="ear" depends="ejb3,war" description="${enterprise.jar}">
+		<jar destfile="${enterprise.jar}">
+			<zipfileset dir=".">
+				<include name="${ejb3.jar}" />
+			</zipfileset>
+			<zipfileset dir=".">
+				<include name="${web.jar}" />
+			</zipfileset>
+			<zipfileset dir="src">
+				<include name="jndi.properties" />
+			</zipfileset>
+			<zipfileset dir="ear" />
+		</jar>
+	</target>
+	
+	<target name="clean" depends="undeploy">
+		<delete>
+			<fileset dir=".">
+				<include name="${ejb3.jar}"/>
+				<include name="${web.jar}"/>
+				<include name="${enterprise.jar}"/>
+				<include name="${src.pack}"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="deploy" depends="war">
+		<copy file="${deploy.pack}" todir="${deploy.dir}" />
+	</target>
+
+	<target name="undeploy">
+		<delete file="${deploy.dir}\${deploy.pack}" />
+	</target>
+
+	<target name="redeploy" depends="undeploy">
+	  <message>Waiting a few seconds for undeploy.</message>
+	  <wait value="5s"/>
+	  <ant-call name="deploy"/>
+	</target>
+
+</project>

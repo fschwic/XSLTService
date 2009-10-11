@@ -1,0 +1,95 @@
+package net.schwichtenberg.xsltservice;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+public class StreamTransformer {
+
+	private static StreamTransformer instance;
+
+	private TransformerFactory factory;
+
+	private Map<URL, Transformer> transformers;
+
+	private StreamTransformer() {
+		super();
+		this.transformers = new HashMap<URL, Transformer>();
+		this.factory = TransformerFactory.newInstance();
+	}
+
+	public static StreamTransformer getInstance() {
+		if (instance == null) {
+			instance = new StreamTransformer();
+		}
+
+		return instance;
+	}
+
+	public static StreamTransformer getInstance(URL xslt)
+			throws TransformerConfigurationException, IOException {
+		if (instance == null) {
+			instance = new StreamTransformer();
+		}
+
+		instance.createTransformer(xslt);
+
+		return instance;
+	}
+
+	public String getOutputEncoding(URL xslt) {
+		return this.transformers.get(xslt).getOutputProperty("encoding");
+	}
+
+	public String getOutputMimeType(URL xslt) {
+		String method = this.transformers.get(xslt).getOutputProperty("method");
+		if (method.equalsIgnoreCase("text")) {
+			method = "plain";
+		}
+		return "text/" + method;
+	}
+
+	public void transform(OutputStream out, InputStream xml, URL xslt,
+			Map<String, String> xsltParams) throws IOException, TransformerException {
+		Transformer t = this.transformers.get(xslt);
+		t.clearParameters();
+		Iterator paramsIterator = xsltParams.keySet().iterator();
+		while (paramsIterator.hasNext()) {
+			String paramKey = (String) paramsIterator.next();
+			t.setParameter(paramKey, xsltParams.get(paramKey));
+		}
+		this.transform(out, xml, xslt);
+	}
+
+	public void transform(OutputStream out, InputStream xml, URL xslt)
+			throws IOException, TransformerException {
+
+		this.createTransformer(xslt);
+		Transformer t = this.transformers.get(xslt);
+
+		t.transform(new StreamSource(xml), new StreamResult(out));
+		 this.transformers.clear();
+	}
+
+	public void createTransformer(URL xslt)
+			throws TransformerConfigurationException, IOException {
+
+		if (!this.transformers.containsKey(xslt)) {
+			Transformer t = this.factory.newTransformer(new StreamSource(xslt
+					.openStream()));
+			this.transformers.put(xslt, t);
+		}
+	}
+
+}

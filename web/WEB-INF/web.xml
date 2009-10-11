@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.4"
+	xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+	<display-name>XSLT Service</display-name>
+
+	<servlet>
+		<description>Streaming XSLT HTTP Service</description>
+		<display-name>The XSLT Servlet</display-name>
+		<servlet-name>xslt</servlet-name>
+		<servlet-class>net.schwichtenberg.xsltservice.XSLTServlet</servlet-class>
+		<init-param>
+			<param-name>config</param-name>
+			<param-value>xsltservice.properties</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>xslt</servlet-name>
+		<url-pattern>/xslt/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<description>Reset the Streaming XSLT HTTP Service</description>
+		<display-name>The XSLT Reset Servlet</display-name>
+		<servlet-name>reset</servlet-name>
+		<servlet-class>net.schwichtenberg.xsltservice.ResetServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>reset</servlet-name>
+		<url-pattern>/reset/*</url-pattern>
+	</servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+
+	<!-- =================================================================== -->
+	<!-- Security                                                            -->
+	<!-- =================================================================== -->
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Reset XSLT Service Security</web-resource-name>
+			<description>Protects a reset request which decouples the current StreamTransformer.</description>
+			<url-pattern>/reset/*</url-pattern>
+			<http-method>GET</http-method>
+		</web-resource-collection>
+
+		<auth-constraint>
+			<role-name>Admin</role-name>
+			<!-- 
+			<role-name>Premium</role-name>
+			<role-name>Basic</role-name>
+			-->
+		</auth-constraint>
+
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+
+	<security-role>
+		<description>Authorized to access everything.</description>
+		<role-name>Admin</role-name>
+	</security-role>
+	<!-- 
+	<security-role>
+		<description>Premium customer access.</description>
+		<role-name>Premium</role-name>
+	</security-role>
+	<security-role>
+		<description>Basic customer access.</description>
+		<role-name>Basic</role-name>
+	</security-role>
+	 -->
+
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>XSLT Service</realm-name>
+		<!-- 
+			BASIC, DIGEST, FORM, and CLIENT-CERT
+			<form-login-config>
+			<form-login-page>security/login.html</form-login-page>
+			<form-error-page>security/loginFailed.html</form-error-page>
+			</form-login-config>
+		-->
+	</login-config>
+
+</web-app>
