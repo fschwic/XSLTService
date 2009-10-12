@@ -13,13 +13,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import org.apache.log4j.Logger;
 
 import net.schwichtenberg.http.exceptions.HttpException;
 import net.schwichtenberg.http.exceptions.InvalidParameterException;
+
+import org.apache.log4j.Logger;
 
 public class XSLTServlet extends HttpServlet {
 
@@ -109,6 +107,7 @@ public class XSLTServlet extends HttpServlet {
 		allowedHostsXml.add("www.tagesschau.de");
 		allowedHostsXml.add("www.ionio.gr");
 		allowedHostsXml.add("www.klack.de");
+		allowedHostsXml.add("fugu.de");
 		allowedHostsXslt.add("localhost");
 		allowedHostsXslt.add("frank.schwichtenberg.net");
 		allowedHostsXslt.add("antonia.schwichtenberg.net");
