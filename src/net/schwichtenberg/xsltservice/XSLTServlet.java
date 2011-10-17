@@ -20,7 +20,13 @@ import javax.servlet.http.HttpServletResponse;
 import net.schwichtenberg.http.exceptions.HttpException;
 import net.schwichtenberg.http.exceptions.InvalidParameterException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class XSLTServlet extends HttpServlet {
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(XSLTServlet.class);
 
 	/**
 	 * Delay in seconds an undesirable request must wait.
@@ -63,9 +69,8 @@ public class XSLTServlet extends HttpServlet {
 			if (!allowedHostsXml.contains(xml.getHost())
 					|| !allowedHostsXslt.contains(xslt.getHost())) {
 				try {
-					getServletContext().log(
-							"Delaying request. xml[" + xml.getHost()
-									+ "] xslt[" + xslt.getHost() + "]");
+					LOGGER.info("Delaying request. xml[" + xml.getHost()
+							+ "] xslt[" + xslt.getHost() + "]");
 					// TODO which one is better
 					// this.wait(undesirable_request_delay * 1000);
 					Thread.sleep(undesirable_request_delay * 1000);
@@ -101,6 +106,7 @@ public class XSLTServlet extends HttpServlet {
 
 	@Override
 	public void init() throws ServletException {
+		LOGGER.debug("Initialising");
 		super.init();
 
 		String configFileName = getServletConfig().getInitParameter("config");
@@ -113,10 +119,8 @@ public class XSLTServlet extends HttpServlet {
 			Reader configReader = new FileReader(configFile);
 			config.load(configReader);
 		} catch (IOException e) {
-			getServletContext().log(
-					"Could not load configuration. " + configFileName);
-			getServletContext().log(
-					"No configuration read. Using default values.");
+			LOGGER.error("Could not load configuration. " + configFileName);
+			LOGGER.warn("No configuration read. Using default values.");
 		}
 
 		// override default delay from config
@@ -130,7 +134,7 @@ public class XSLTServlet extends HttpServlet {
 			String[] hostsXml = config.getProperty("xml.url.allowed.hostname")
 					.split(",");
 			for (String host : hostsXml) {
-				getServletContext().log("Adding host XML: " + host);
+				LOGGER.info("Adding host XML: " + host);
 				allowedHostsXml.add(host);
 			}
 		}
@@ -140,7 +144,7 @@ public class XSLTServlet extends HttpServlet {
 			String[] hostsXslt = config
 					.getProperty("xslt.url.allowed.hostname").split(",");
 			for (String host : hostsXslt) {
-				this.log("Adding host XSL: " + host);
+				LOGGER.info("Adding host XSL: " + host);
 				allowedHostsXslt.add(host);
 			}
 		}
@@ -148,7 +152,7 @@ public class XSLTServlet extends HttpServlet {
 
 	@Override
 	public void destroy() {
-		this.log("Destroing.");
+		LOGGER.debug("Destroing.");
 		super.destroy();
 	}
 }
