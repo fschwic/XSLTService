@@ -43,6 +43,7 @@ public class StreamTransformer implements
 	public static StreamTransformer getInstance() {
 		if (instance == null) {
 			instance = new StreamTransformer();
+			LOGGER.debug("Created new instance: " + instance);
 		}
 
 		return instance;
@@ -61,6 +62,7 @@ public class StreamTransformer implements
 			throws TransformerException {
 		if (instance == null) {
 			instance = new StreamTransformer();
+			LOGGER.debug("Created new instance: " + instance);
 		}
 
 		instance.createTransformer(xslt);
@@ -209,7 +211,7 @@ public class StreamTransformer implements
 
 	public void reset() {
 		this.transformerPool.clear();
-		// instance = null;
+		instance = null;
 	}
 
 }

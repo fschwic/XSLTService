@@ -7,12 +7,30 @@
 </head>
 <body>
 <h1>XSLT Service</h1>
-<p>You may send the URLs of an XML and an XSLT file to this service in
-order to get the XML transformed by the XSLT as response.</p>
+<p>You may send the URLs of an XML and an XSLT file to this service
+in order to get the XML transformed by the XSLT as response.</p>
 <p>For Example: <tt>http://.../xslt?xml=http://localhost/pathTo/my.xml&xslt=http://localhost/pathTo/my.xsl</tt>
 </p>
-<p><b>Note</b>: This service feel for some hostnames. If you send URLs
-which have not one of that hostnames your request is <b>delayed for 5
-seconds</b>.</p>
+<p><b>Note</b>: This service feel for some hostnames. If you send
+URLs which have not one of that hostnames your request is <b>delayed
+for 5 or more seconds</b>.</p>
+<h2>Usage</h2>
+<p>
+<dl>
+	<dt><a href="xslt">xslt</a></dt>
+	<dd>Transform XML by XSL. Params:
+	<dl>
+		<dt>xml</dt>
+		<dd>URL of a XML document to be transformed.</dd>
+		<dt>xslt</dt>
+		<dd>URL of a XSL document containing transformation instructions.</dd>
+	</dl>
+	Several arbitrary params which are passed to the transformation (see
+	xsl:param).</dd>
+	<dt><a href="reset">reset</a></dt>
+	<dd>Clear Transformer Pool. This resource is protected. By default
+	the runtime containers role <i>Admin</i> is required.</dd>
+</dl>
+</p>
 </body>
 </html>

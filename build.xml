@@ -107,9 +107,9 @@
 	</target>
 
 	<target name="redeploy" depends="undeploy">
-	  <message>Waiting a few seconds for undeploy.</message>
-	  <wait value="5s"/>
-	  <ant-call name="deploy"/>
+	  <echo>Undeployed. Waiting a few seconds.</echo>
+	  <sleep seconds="5"/>
+	  <antcall target="deploy"/>
 	</target>
 
 </project>

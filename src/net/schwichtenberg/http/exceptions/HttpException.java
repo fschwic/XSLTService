@@ -10,13 +10,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.log4j.Logger;
-
-import com.sun.xml.internal.ws.api.streaming.XMLStreamWriterFactory;
-
 public class HttpException extends Exception {
-
-	private static final Logger logger = Logger.getLogger(HttpException.class);
 
 	private static final long serialVersionUID = 1L;
 

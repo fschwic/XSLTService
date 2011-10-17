@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.jboss.ide.eclipse.as.classpath.core.javaee-5.0"/>
-	<classpathentry kind="lib" path="/media/EPOKO.projects/projects/XSLTService/web/WEB-INF/lib/commons-pool-1.5.3.jar"/>
-	<classpathentry kind="lib" path="/media/EPOKO.projects/jboss/server/default/lib/log4j.jar"/>
+	<classpathentry kind="lib" path="/media/devel/projects/XSLTService/web/WEB-INF/lib/commons-pool-1.5.3.jar"/>
+	<classpathentry kind="lib" path="/media/devel/jboss-4.2.3.GA/server/default/lib/log4j.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

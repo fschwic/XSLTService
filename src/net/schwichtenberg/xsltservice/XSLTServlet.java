@@ -1,13 +1,16 @@
 package net.schwichtenberg.xsltservice;
 
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.Properties;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,23 +20,16 @@ import javax.servlet.http.HttpServletResponse;
 import net.schwichtenberg.http.exceptions.HttpException;
 import net.schwichtenberg.http.exceptions.InvalidParameterException;
 
-import org.apache.log4j.Logger;
-
 public class XSLTServlet extends HttpServlet {
-
-	private static final Logger LOGGER = Logger.getLogger(XSLTServlet.class);
 
 	/**
 	 * Delay in seconds an undesirable request must wait.
 	 */
-	private static final int UNDESIRABLE_REQUEST_DELAY = 5;
+	private int undesirable_request_delay = 5;
 
-	private static final StreamTransformer TRANSFORMER = StreamTransformer
-			.getInstance();
+	private Set<String> allowedHostsXml = new HashSet<String>();
 
-	private List<String> allowedHostsXml = new Vector<String>();
-
-	private List<String> allowedHostsXslt = new Vector<String>();
+	private Set<String> allowedHostsXslt = new HashSet<String>();
 
 	public XSLTServlet() {
 		super();
@@ -62,26 +58,32 @@ public class XSLTServlet extends HttpServlet {
 				params.put(key, req.getParameter(key));
 			}
 
-			// check if desirable request, otherwise wait UNDESIRABLE_USER_DELAY
+			// check if desirable request, otherwise wait
+			// undesirable_request_delay
 			if (!allowedHostsXml.contains(xml.getHost())
 					|| !allowedHostsXslt.contains(xslt.getHost())) {
 				try {
-					LOGGER.info("Delaying request. xml[" + xml.getHost()
-							+ "] xslt[" + xslt.getHost() + "]");
-					Thread.sleep(UNDESIRABLE_REQUEST_DELAY * 1000);
+					getServletContext().log(
+							"Delaying request. xml[" + xml.getHost()
+									+ "] xslt[" + xslt.getHost() + "]");
+					// TODO which one is better
+					// this.wait(undesirable_request_delay * 1000);
+					Thread.sleep(undesirable_request_delay * 1000);
 				} catch (InterruptedException e) {
 					throw new ServletException(e);
 				}
 			}
 
 			// prepare response and transform
-			TRANSFORMER.createTransformer(xslt);
-			resp.setCharacterEncoding(TRANSFORMER.getOutputEncoding(xslt));
-			resp.setContentType(TRANSFORMER.getOutputMimeType(xslt));
+			StreamTransformer.getInstance().createTransformer(xslt);
+			resp.setCharacterEncoding(StreamTransformer.getInstance()
+					.getOutputEncoding(xslt));
+			resp.setContentType(StreamTransformer.getInstance()
+					.getOutputMimeType(xslt));
 
 			try {
-				TRANSFORMER.transform(resp.getOutputStream(), xml.openStream(),
-						xslt, params);
+				StreamTransformer.getInstance().transform(
+						resp.getOutputStream(), xml.openStream(), xslt, params);
 			} catch (IOException e) {
 				// TODO specify
 				throw new HttpException(e);
@@ -100,17 +102,53 @@ public class XSLTServlet extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		allowedHostsXml.add("localhost");
-		allowedHostsXml.add("frank.schwichtenberg.net");
-		allowedHostsXml.add("antonia.schwichtenberg.net");
-		allowedHostsXml.add("www.java.de");
-		allowedHostsXml.add("www.tagesschau.de");
-		allowedHostsXml.add("www.ionio.gr");
-		allowedHostsXml.add("www.klack.de");
-		allowedHostsXml.add("fugu.de");
-		allowedHostsXslt.add("localhost");
-		allowedHostsXslt.add("frank.schwichtenberg.net");
-		allowedHostsXslt.add("antonia.schwichtenberg.net");
-		allowedHostsXslt.add("www.java.de");
+
+		String configFileName = getServletConfig().getInitParameter("config");
+		Properties config = new Properties();
+		try {
+			Properties props = System.getProperties();
+			String configFile = (String) props.get("catalina.home") + "/conf/"
+					+ configFileName;
+
+			Reader configReader = new FileReader(configFile);
+			config.load(configReader);
+		} catch (IOException e) {
+			getServletContext().log(
+					"Could not load configuration. " + configFileName);
+			getServletContext().log(
+					"No configuration read. Using default values.");
+		}
+
+		// override default delay from config
+		if (config.getProperty("undesirable.request.delay") != null) {
+			undesirable_request_delay = Integer.parseInt(config
+					.getProperty("undesirable.request.delay"));
+		}
+
+		// load trusted host for xml from config
+		if (config.getProperty("xml.url.allowed.hostname") != null) {
+			String[] hostsXml = config.getProperty("xml.url.allowed.hostname")
+					.split(",");
+			for (String host : hostsXml) {
+				getServletContext().log("Adding host XML: " + host);
+				allowedHostsXml.add(host);
+			}
+		}
+
+		// load trusted host for xsl from config
+		if (config.getProperty("xslt.url.allowed.hostname") != null) {
+			String[] hostsXslt = config
+					.getProperty("xslt.url.allowed.hostname").split(",");
+			for (String host : hostsXslt) {
+				this.log("Adding host XSL: " + host);
+				allowedHostsXslt.add(host);
+			}
+		}
+	}
+
+	@Override
+	public void destroy() {
+		this.log("Destroing.");
+		super.destroy();
 	}
 }
