@@ -80,7 +80,7 @@ public class XSLTServlet extends HttpServlet {
 			}
 
 			// prepare response and transform
-			StreamTransformer.getInstance().createTransformer(xslt);
+//			StreamTransformer.getInstance().createTransformer(xslt);
 			resp.setCharacterEncoding(StreamTransformer.getInstance()
 					.getOutputEncoding(xslt));
 			resp.setContentType(StreamTransformer.getInstance()

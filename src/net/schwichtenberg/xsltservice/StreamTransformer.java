@@ -58,17 +58,17 @@ public class StreamTransformer implements
 	 * 
 	 * @deprecated
 	 */
-	public static StreamTransformer getInstance(URL xslt)
-			throws TransformerException {
-		if (instance == null) {
-			instance = new StreamTransformer();
-			LOGGER.debug("Created new instance: " + instance);
-		}
-
-		instance.createTransformer(xslt);
-
-		return instance;
-	}
+//	public static StreamTransformer getInstance(URL xslt)
+//			throws TransformerException {
+//		if (instance == null) {
+//			instance = new StreamTransformer();
+//			LOGGER.debug("Created new instance: " + instance);
+//		}
+//
+//		instance.createTransformer(xslt);
+//
+//		return instance;
+//	}
 
 	/**
 	 * Returns the encoding of the transformation result as defined in the XSLT
@@ -188,22 +188,22 @@ public class StreamTransformer implements
 	 * 
 	 * @deprecated
 	 */
-	public void createTransformer(URL xslt) throws TransformerException {
-
-		try {
-			Transformer t = (Transformer) this.transformerPool
-					.borrowObject(xslt);
-			this.transformerPool.returnObject(xslt, t);
-		} catch (Exception e) {
-			if (e instanceof TransformerException) {
-				TransformerException te = (TransformerException) e;
-				throw te;
-			} else {
-				throw new TransformerException(
-						"TransformerPool throws exception.", e);
-			}
-		}
-	}
+//	public void createTransformer(URL xslt) throws TransformerException {
+//
+//		try {
+//			Transformer t = (Transformer) this.transformerPool
+//					.borrowObject(xslt);
+//			this.transformerPool.returnObject(xslt, t);
+//		} catch (Exception e) {
+//			if (e instanceof TransformerException) {
+//				TransformerException te = (TransformerException) e;
+//				throw te;
+//			} else {
+//				throw new TransformerException(
+//						"TransformerPool throws exception.", e);
+//			}
+//		}
+//	}
 
 	public void removeTransformer(URL xslt) {
 		this.transformerPool.clear(xslt);
