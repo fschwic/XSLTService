@@ -1,3 +1,4 @@
 XSLTService.war
 bin/
 xsltservice.properties
+/.classpath
