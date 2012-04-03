@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>XSLTService by fschwic</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>XSLTService</h1>
+        <p>Send the URLs of an XML and an XSLT file to this service in order to get the XML transformed by the XSLT as response.</p>
+        <p class="view"><a href="https://github.com/fschwic/XSLTService">View the Project on GitHub <small>fschwic/XSLTService</small></a></p>
+        <ul>
+          <li><a href="https://github.com/fschwic/XSLTService/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/fschwic/XSLTService/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/fschwic/XSLTService">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>See index page of the installed service for usage information.</p>
+
+<h2>Install</h2>
+
+<p>XSLTService comes as a WAR to be deployed in Tomcat or similar. Configuration is read from catlina home conf directory. Default config file name is xsltservice.properties. See xsltservice.example.properties.</p>
+
+<h3>Delayed Requests</h3>
+
+<p>Every request send to XSLTervice where the domain of XML or XSLT document is not known by the service is considered as undesirable and is delayed. To avoid the delay configure the hostnames you want to load XML or XSLT documents from.</p>
+
+<h3>Logging</h3>
+
+<p>XSLTService uses SLF4J for logging. If the used runtime container does not provide SLF4J the slf4j-api.jar and a logger binder should be put in the runtime containers classpath.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/fschwic">fschwic</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
