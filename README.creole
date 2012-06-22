@@ -4,7 +4,6 @@ in order to get the XML transformed by the XSLT as response.
 
 See index page for usage information.
 
-
 === Configuration ===
 Configuration is read from catlina home conf directory. Default 
 config file name is xsltservice.properties. 
