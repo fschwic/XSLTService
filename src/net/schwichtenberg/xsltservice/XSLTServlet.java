@@ -42,6 +42,17 @@ public class XSLTServlet extends HttpServlet {
 	}
 
 	@Override
+	protected void service(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		// allow all cross site requests
+		resp.setHeader("Access-Control-Allow-Origin", req.getHeader("Origin"));
+		resp.setHeader("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+		resp.setHeader("Access-Control-Allow-Credentials", "true");
+		super.service(req, resp);
+
+	}
+
+	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException {
 
@@ -80,7 +91,7 @@ public class XSLTServlet extends HttpServlet {
 			}
 
 			// prepare response and transform
-//			StreamTransformer.getInstance().createTransformer(xslt);
+			// StreamTransformer.getInstance().createTransformer(xslt);
 			resp.setCharacterEncoding(StreamTransformer.getInstance()
 					.getOutputEncoding(xslt));
 			resp.setContentType(StreamTransformer.getInstance()
